@@ -9,14 +9,20 @@ namespace FLOSSLOOP.Repositories
 {
     public class UserRepository
     {
-        // Buat objek DatabaseConnection dengan konfigurasi PostgreSQL kamu
-        private readonly DatabaseConnection _db = new DatabaseConnection(
-            host: "localhost",
-            port: 5432,
-            database: "FLOSSLOOP_db",
-            username: "postgres",
-            password: "passwordmu_rek"
-        );
+        private readonly DatabaseConnection _db;
+
+        public UserRepository()
+        {
+            // Load konfigurasi database dari environment variables (.env)
+            var dbSettings = DatabaseSettings.LoadFromEnvironment();          // izin ubah ya kell ngga enak kan kalo PW database ditaruh sini hehe - alif
+            _db = new DatabaseConnection(
+                host: dbSettings.Host,
+                port: dbSettings.Port,
+                database: dbSettings.Database,
+                username: dbSettings.Username,
+                password: dbSettings.Password
+            );
+        }
 
         public User? GetByEmailAndPassword(string email, string password)
         {
