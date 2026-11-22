@@ -14,35 +14,27 @@ FLOSSLOOP (Food Loss Optimization and Sustainability Loop) merupakan aplikasi ma
 
 ## Setup Development Environment
 
-### 1. Buat Database PostgreSQL
+### Setup Database
 
-Buka pgAdmin atau psql command line, lalu buat database baru:
+Jalankan **1 command** ini untuk setup otomatis:
 
-```sql
-CREATE DATABASE FLOSSLOOP_db;
+```bash
+psql -U postgres -f Database/setup-database.sql
 ```
 
-### 2. Buat Tabel Users
+**Apa yang terjadi:**
+-  Database `FLOSSLOOP_db` dibuat
+-  Tabel `users` dibuat + 2 data dummy
+-  Tabel `hasil_panen` dibuat + 4 data contoh
+-  Selesai!
 
-Jalankan script berikut di database `FLOSSLOOP_db`:
+**Jika PostgreSQL tidak di-PATH:**
 
-```sql
-CREATE TABLE IF NOT EXISTS public.users (
-    id SERIAL PRIMARY KEY,
-    nama VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    role VARCHAR(20) NOT NULL
-);
+Buka "SQL Shell (psql)" dari Start Menu PostgreSQL, lalu copy-paste seluruh isi file `Database/setup-database.sql` ke terminal.
 
--- Insert data dummy untuk testing
-INSERT INTO public.users (nama, email, password, role)
-VALUES 
-    ('Admin Pemilik', 'pemilik@gmail.com', '123456', 'Pemilik'),
-    ('Karyawan', 'pegawai@gmail.com', '123456', 'Pegawai');
-```
+---
 
-### 3. Konfigurasi File `.env`
+### Konfigurasi File `.env`
 
 Copy file `.env.example` menjadi `.env` di root project:
 
@@ -62,16 +54,16 @@ DB_PASSWORD=password_postgresql_anda
 ```
 
 **Catatan:** 
-- Ganti password_postgresql_anda` dengan password PostgreSQL yang sebenarnya
+- Ganti `password_postgresql_anda` dengan password PostgreSQL yang sebenarnya
 - File `.env` **TIDAK** akan di-commit ke Git (sudah di `.gitignore`)
 - Setiap developer harus membuat `.env` pribadi mereka
 
-### 4. Jalankan Aplikasi
+### Jalankan App
 
 Di Visual Studio:
 
-1. **Build project:** `Ctrl+Shift+B` (atau `Build > Build Solution`)
-2. **Jalankan aplikasi:** `F5` (atau `Debug > Start Debugging`)
+1. **Build project:** `Ctrl+Shift+B`
+2. **Jalankan aplikasi:** `F5`
 
 Atau dari PowerShell:
 
@@ -83,7 +75,7 @@ dotnet run
 
 ---
 
-## Login Credentials (untuk testing)
+## Login Credentials (untuk testing aja)
 
 Gunakan data dummy yang sudah diinsert:
 
@@ -102,7 +94,7 @@ FLOSSLOOP/
 ├── Database/          # Konfigurasi database
 ├── Models/            # Model User dan role (Pemilik, Pegawai)
 ├── Repositories/      # Data access layer
-├── Views/             # UI forms (LoginForm, Form1, etc)
+├── Views/             # UI forms (LoginForm, FormPencatatan, Form1)
 ├── Program.cs         # Entry point aplikasi
 ├── .env.example       # Template konfigurasi (untuk di-share)
 ├── .env              # Konfigurasi lokal (private, not in Git)
@@ -111,7 +103,39 @@ FLOSSLOOP/
 
 ---
 
-## Troubleshooting notes
+
+
+
+
+## Troubleshooting
+
+### Error: "Email atau password salah" saat login
+
+**Penyebab kemungkinan:**
+1. Data user belum ada di tabel `users`
+2. Email atau password yang diinput tidak sesuai dengan database
+3. Aplikasi tidak konek ke database
+
+**Solusi:**
+1. Verifikasi data ada di database:
+```sql
+SELECT * FROM public.users;
+```
+
+2. Jika tidak ada data, insert data dummy:
+```sql
+INSERT INTO public.users (nama, email, password, role)
+VALUES 
+    ('Admin Pemilik', 'pemilik@gmail.com', '123456', 'Pemilik'),
+    ('Karyawan', 'pegawai@gmail.com', '123456', 'Pegawai');
+```
+
+3. Verifikasi file `.env` sudah ada dan konfigurasi PostgreSQL benar:
+- `DB_HOST=localhost`
+- `DB_PORT=5432`
+- `DB_PASSWORD=` password PostgreSQL yang benar
+
+4. Restart aplikasi setelah update `.env`
 
 ### Error: "relation 'users' does not exist"
 

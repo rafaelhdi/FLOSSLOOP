@@ -16,10 +16,10 @@ namespace FLOSSLOOP.Database
             return new DatabaseSettings
             {
                 Host = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost",
-                Port = int.TryParse(Environment.GetEnvironmentVariable("DB_PORT"), out var port) ? port : 5432,
+                Port = int.TryParse(Environment.GetEnvironmentVariable("DB_PORT"), out var port) ? port : 5433,  // awasi port ini (ini confignya alif mungkin kalian 5433)
                 Database = Environment.GetEnvironmentVariable("DB_NAME") ?? "FLOSSLOOP_db",
                 Username = Environment.GetEnvironmentVariable("DB_USERNAME") ?? "postgres",
-                Password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "password"
+                Password = Environment.GetEnvironmentVariable("DB_PASSWORD") ?? "admin"
             };
         }
     }

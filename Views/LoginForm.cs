@@ -32,8 +32,8 @@ namespace FLOSSLOOP.Views
                 {
                     MessageBox.Show($"Selamat datang, {user.Nama} ({user.Role})!", "Login Berhasil", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    // Pindah ke Form utama (sesuaikan dengan nama form utama dari temanmu, misal Form1)
-                    Form1 mainForm = new Form1();
+                    // Pindah ke form Pencatatan Hasil Panen, bawa data user (untuk pengecekan role)
+                    FormPencatatan mainForm = new FormPencatatan(user);
                     mainForm.FormClosed += (s, args) => Application.Exit();
                     mainForm.Show();
                     this.Hide();
@@ -53,6 +53,11 @@ namespace FLOSSLOOP.Views
             {
                 MessageBox.Show($"Gagal terhubung ke database: {ex.Message}", "Error Database", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void LoginForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
